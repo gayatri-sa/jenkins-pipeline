@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  become: true
+  gather_facts: no
+  connection: local
+
+  tasks:
+    - set_fact: BUILD_NUMBER="{{ lookup('env','BUILD_NUMBER') }}"
+    - name: Build a tomcat container from the latest image build
+      docker_container:
+        image: gayatrisa/samplejava-pipeline-test:{{BUILD_NUMBER}}
+        name: tomcat-deploy
+        state: started
+        recreate: yes
+        published_ports:
+          - 8080
